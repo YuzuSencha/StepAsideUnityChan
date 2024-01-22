@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using UnityEngine;
 
 public class ItemGenerator : MonoBehaviour
@@ -9,19 +10,48 @@ public class ItemGenerator : MonoBehaviour
         public GameObject coinPrefab;       
         public GameObject conePrefab;        
         private int startPos = 80;
+        private GameObject unitychan;
         
         private int goalPos = 360;
+        //private int initDraw = 45;
+        private bool generateItems = true;
+        private int nextSegment = 80;
+        private int segmentLength = 15;
         
         private float posRange = 3.4f;
 
         // Start is called before the first frame update
         void Start ()
         {
+            this.unitychan = GameObject.Find("unitychan");
                 
-            for (int i = startPos; i < goalPos; i+=15)
-            {
-                    
-                int num = Random.Range (1, 11);
+            GenerateItem(this.startPos);
+            
+
+          
+        }
+
+        // Update is called once per frame
+        void Update ()
+        {
+            int i = (int)this.unitychan.transform.position.z;
+            
+            if((i+this.startPos+15==this.nextSegment)&&(this.nextSegment<this.goalPos)){                
+                
+                    Debug.Log("item gen");
+                    GenerateItem(this.nextSegment);                  
+                    this.generateItems = false;
+                                        
+                               
+            }
+
+            // while(generateItems = true){
+
+            // }
+        }
+
+        void GenerateItem(int i){
+            int num = Random.Range (1, 11);
                 if (num <= 2)
                 {                                
                     for (float j = -1; j <= 1; j += 0.4f)
@@ -36,7 +66,7 @@ public class ItemGenerator : MonoBehaviour
                     {
                         
                         int item = Random.Range (1, 11);                        
-                        int offsetZ = Random.Range(-5, 6);
+                        int offsetZ = Random.Range(-5, 6); 
                         
                         if (1 <= item && item <= 6)
                         {
@@ -51,15 +81,11 @@ public class ItemGenerator : MonoBehaviour
                             car.transform.position = new Vector3 (posRange * j, car.transform.position.y, i + offsetZ);
                         }
                     }
-                }
-            }
+                }                
+            this.nextSegment += 15;
+            Debug.Log("next segment:" + this.nextSegment);
+            this.generateItems = true;
         }
 
-        // Update is called once per frame
-        void Update ()
-        {
-            //update view and genereate/destroy stuff
-        }
 
-        
 }
